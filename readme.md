@@ -1,5 +1,5 @@
 # test_pico
-# use [QMK][https://qmk.fm/] to compile
+# use [QMK](https://qmk.fm/) to compile
 ![test_pico](imgur.com image replace me!)
 
 *A short description of the keyboard/project*
