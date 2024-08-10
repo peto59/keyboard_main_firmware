@@ -6,6 +6,7 @@
 #include "debounce.h"
 #include "quantum.h"
 #include "matrix.h"
+#include "test_pico.h"
 
 #include QMK_KEYBOARD_H
 

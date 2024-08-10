@@ -10,6 +10,16 @@
 #define MATRIX_ROWS 2
 #define MATRIX_COLS 6
 
+#define MAIN_ROWS 2
+#define MAIN_COLS 2
+#define LEFT_ROWS 2
+#define LEFT_COLS 2
+#define RIGHT_ROWS 2
+#define RIGHT_COLS 2
+
+#define SLAVE_I2C_ADDRESS_RIGHT (0x76 << 1)
+#define SLAVE_I2C_ADDRESS_LEFT (0x77 << 1)
+
 #define USE_I2C TRUE
 #define I2C_DRIVER I2CD1
 #define I2C1_SCL_PIN GP3
