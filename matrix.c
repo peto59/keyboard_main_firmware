@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <i2c_master.h>
+#include "config.h"
 #include "print.h"
 #include "debug.h"
 #include "debounce.h"
@@ -35,14 +36,14 @@ matrix_row_t matrix_get_row(uint8_t row) {
 void matrix_print(void) {
 #ifdef CONSOLE_ENABLE
 	for (uint_fast8_t r = 0; r < MATRIX_ROWS; r++) {
-		dprintf("%u\n", matrix[r]);
+		dprintf("%lu\n", matrix[r]);
 	}
 #endif
 }
 
 void matrix_init(void) {
     // TODO: initialize hardware and global matrix state here
-    i2c_initialize();
+    //i2c_initialize();
     for(uint8_t i = 0; i < MATRIX_ROWS; i++) {
         raw_matrix[i] = 0;
         matrix[i] = 0;
@@ -84,7 +85,7 @@ uint8_t matrix_scan(void) {
 		
 	uint8_t read;
 	i2c_status_t status;
-	for (r = 0; r < MATRIX_ROWS; r++) {
+	for (r = 0; r < RIGHT_ROWS; r++) {
 		status = i2c_read_register(SLAVE_I2C_ADDRESS_RIGHT, r, &read, 1, 1);
 		if(status == I2C_STATUS_SUCCESS){	
 			current_matrix[r] |= read;
@@ -95,7 +96,9 @@ uint8_t matrix_scan(void) {
 			dprint("i2c error right\n");
 		}
 #endif
-		
+    }
+
+    for (r = 0; r < LEFT_ROWS; r++) {
 		status = i2c_read_register(SLAVE_I2C_ADDRESS_LEFT, r, &read, 1, 1);
 		if(status == I2C_STATUS_SUCCESS){	
 			current_matrix[r] |= (read << (MAIN_COLS+RIGHT_COLS));
@@ -106,12 +109,13 @@ uint8_t matrix_scan(void) {
 			dprint("i2c error left\n");
 		}
 #endif
-		
-		if(current_matrix[r] != matrix[r]) {
+	}
+	for (r = 0; r < MATRIX_ROWS; r++) {
+        if(current_matrix[r] != matrix[r]) {
             matrix[r] = current_matrix[r];
             changed = true;
-        } 
-	}
+        }
+    }
 
     //debounce(raw_matrix, matrix, MATRIX_ROWS, changed);
 
