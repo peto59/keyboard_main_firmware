@@ -10,5 +10,5 @@ MATRIX_COLS = 19
 
 for r in range(MATRIX_ROWS):
     for c in range(MATRIX_COLS):
-        print("KC_NONE,",end="")
+        print("KC_NO,",end="")
     print("\\\n",end="")

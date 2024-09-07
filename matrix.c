@@ -18,8 +18,8 @@ __attribute__((weak)) void matrix_scan_user(void) {}
 __attribute__((weak)) void matrix_init_quantum(void) { matrix_init_kb(); }
 __attribute__((weak)) void matrix_scan_quantum(void) { matrix_scan_kb(); }
 
-uint_fast8_t col_pins [MAIN_COLS] = {GP14, GP17};
-uint_fast8_t row_pins [MAIN_ROWS] = {GP15, GP16};
+uint_fast8_t col_pins [MAIN_COLS] = {GP2, GP3, GP6, GP7, GP8, GP9, GP10, GP11, GP12, GP13, GP14};
+uint_fast8_t row_pins [MAIN_ROWS] = {GP15, GP16, GP17, GP18, GP19, GP20, GP21, GP22, GP26, GP27};
 
 static matrix_row_t raw_matrix[MATRIX_ROWS];  // raw values
 static matrix_row_t matrix[MATRIX_ROWS];      // debounced values
@@ -76,14 +76,14 @@ uint8_t matrix_scan(void) {
 	
 	for (uint_fast8_t c = 0; c < MAIN_COLS; c++) {
 		gpio_write_pin_high(col_pins[c]);
-		wait_us(1);
+		wait_us(5);
 		for (r = 0; r < MAIN_ROWS; r++) {
 			current_matrix[r] |= (gpio_read_pin(row_pins[r]) << (c+RIGHT_COLS));
 		}
 		gpio_write_pin_low(col_pins[c]);
 	}
 		
-	uint8_t read;
+	/*uint8_t read;
 	i2c_status_t status;
 	for (r = 0; r < RIGHT_ROWS; r++) {
 		status = i2c_read_register(SLAVE_I2C_ADDRESS_RIGHT, r, &read, 1, 1);
@@ -96,9 +96,9 @@ uint8_t matrix_scan(void) {
 			dprint("i2c error right\n");
 		}
 #endif
-    }
+    }*/
 
-    for (r = 0; r < LEFT_ROWS; r++) {
+    /*for (r = 0; r < LEFT_ROWS; r++) {
 		status = i2c_read_register(SLAVE_I2C_ADDRESS_LEFT, r, &read, 1, 1);
 		if(status == I2C_STATUS_SUCCESS){	
 			current_matrix[r] |= (read << (MAIN_COLS+RIGHT_COLS));
@@ -109,7 +109,7 @@ uint8_t matrix_scan(void) {
 			dprint("i2c error left\n");
 		}
 #endif
-	}
+	}*/
 	for (r = 0; r < MATRIX_ROWS; r++) {
         if(current_matrix[r] != matrix[r]) {
             matrix[r] = current_matrix[r];
