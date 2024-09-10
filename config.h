@@ -27,7 +27,7 @@
 #undef I2C1_SCL_PIN
 #define I2C1_SCL_PIN GP5
 //#define I2C2_SCL_PAL_MODE 3
-#undef I2C0_SDA_PIN
+#undef I2C1_SDA_PIN
 #define I2C1_SDA_PIN GP4
 //#define I2C2_SDA_PAL_MODE 3
 

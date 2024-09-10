@@ -36,7 +36,7 @@ matrix_row_t matrix_get_row(uint8_t row) {
 void matrix_print(void) {
 #ifdef CONSOLE_ENABLE
 	for (uint_fast8_t r = 0; r < MATRIX_ROWS; r++) {
-		dprintf("%lu\n", matrix[r]);
+		dprintf("matrix row %u : %lu\n", r, matrix[r]);
 	}
 #endif
 }
@@ -86,9 +86,10 @@ uint8_t matrix_scan(void) {
 	uint8_t read;
 	i2c_status_t status;
 	for (r = 0; r < RIGHT_ROWS; r++) {
-		status = i2c_read_register(SLAVE_I2C_ADDRESS_RIGHT, r, &read, 1, 1);
-		if(status == I2C_STATUS_SUCCESS){	
-			current_matrix[r] |= read;
+		status = i2c_read_register(SLAVE_I2C_ADDRESS_RIGHT, r, &read, 1, 1000);
+		if(status == I2C_STATUS_SUCCESS){
+            current_matrix[r] |= (read << (MAIN_COLS+RIGHT_COLS));
+
 		}
 #ifdef CONSOLE_ENABLE
 		else
@@ -98,10 +99,10 @@ uint8_t matrix_scan(void) {
 #endif
     }
 
-    /*for (r = 0; r < LEFT_ROWS; r++) {
-		status = i2c_read_register(SLAVE_I2C_ADDRESS_LEFT, r, &read, 1, 1);
+    for (r = 0; r < LEFT_ROWS; r++) {
+		status = i2c_read_register(SLAVE_I2C_ADDRESS_LEFT, r, &read, 1, 1000);
 		if(status == I2C_STATUS_SUCCESS){	
-			current_matrix[r] |= (read << (MAIN_COLS+RIGHT_COLS));
+			current_matrix[r] |= read;
 		}
 #ifdef CONSOLE_ENABLE
 		else
@@ -109,7 +110,7 @@ uint8_t matrix_scan(void) {
 			dprint("i2c error left\n");
 		}
 #endif
-	}*/
+	}
 	for (r = 0; r < MATRIX_ROWS; r++) {
         if(current_matrix[r] != matrix[r]) {
             matrix[r] = current_matrix[r];
