@@ -1,4 +1,4 @@
-#include "test_pico.h"
+#include "peto59.h"
 
 //static i2c_status_t last_err = 0;
 bool i2c_initialized = false;

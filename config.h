@@ -20,11 +20,15 @@
 #define SLAVE_I2C_ADDRESS_RIGHT (0x76 << 1)
 #define SLAVE_I2C_ADDRESS_LEFT (0x77 << 1)
 
+#undef USE_I2C
 #define USE_I2C TRUE
-#define I2C_DRIVER I2CD1
-#define I2C1_SCL_PIN GP3
+#undef I2C_DRIVER
+#define I2C_DRIVER I2CD0
+#undef I2C1_SCL_PIN
+#define I2C1_SCL_PIN GP5
 //#define I2C2_SCL_PAL_MODE 3
-#define I2C1_SDA_PIN GP2
+#undef I2C0_SDA_PIN
+#define I2C1_SDA_PIN GP4
 //#define I2C2_SDA_PAL_MODE 3
 
 #undef F_SCL

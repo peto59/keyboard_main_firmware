@@ -7,7 +7,7 @@
 #include "debounce.h"
 #include "quantum.h"
 #include "matrix.h"
-#include "test_pico.h"
+#include "peto59.h"
 
 #include QMK_KEYBOARD_H
 
@@ -43,7 +43,7 @@ void matrix_print(void) {
 
 void matrix_init(void) {
     // TODO: initialize hardware and global matrix state here
-    //i2c_initialize();
+    i2c_initialize();
     for(uint8_t i = 0; i < MATRIX_ROWS; i++) {
         raw_matrix[i] = 0;
         matrix[i] = 0;
@@ -83,7 +83,7 @@ uint8_t matrix_scan(void) {
 		gpio_write_pin_low(col_pins[c]);
 	}
 		
-	/*uint8_t read;
+	uint8_t read;
 	i2c_status_t status;
 	for (r = 0; r < RIGHT_ROWS; r++) {
 		status = i2c_read_register(SLAVE_I2C_ADDRESS_RIGHT, r, &read, 1, 1);
@@ -96,7 +96,7 @@ uint8_t matrix_scan(void) {
 			dprint("i2c error right\n");
 		}
 #endif
-    }*/
+    }
 
     /*for (r = 0; r < LEFT_ROWS; r++) {
 		status = i2c_read_register(SLAVE_I2C_ADDRESS_LEFT, r, &read, 1, 1);
