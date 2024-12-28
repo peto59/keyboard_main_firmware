@@ -1,6 +1,6 @@
 {
     "manufacturer": "peto59",
-    "keyboard_name": "test_pico",
+    "keyboard_name": "ti2c",
     "maintainer": "peto59",
     "bootloader": "rp2040",
     "diode_direction": "COL2ROW",
@@ -211,7 +211,7 @@
                 {"matrix": [9, 15], "x": 15, "y": 9, "h": 1, "w": 1, "label": "none"},
                 {"matrix": [9, 16], "x": 16, "y": 9, "h": 1, "w": 1, "label": "none"},
                 {"matrix": [9, 17], "x": 17, "y": 9, "h": 1, "w": 1, "label": "none"},
-                {"matrix": [9, 18], "x": 18, "y": 9, "h": 1, "w": 1, "label": "none"},
+                {"matrix": [9, 18], "x": 18, "y": 9, "h": 1, "w": 1, "label": "none"}
             ]
         }
     }
