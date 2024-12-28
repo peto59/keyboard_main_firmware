@@ -7,6 +7,11 @@
 #define RP2040_BOOTLOADER_DOUBLE_TAP_RESET_TIMEOUT 200U // Timeout window in ms in which the double tap can occur.
 #define RP2040_BOOTLOADER_DOUBLE_TAP_RESET_LED GP25 // Specify a optional status led by GPIO number which blinks when entering the bootloader
 
+#define BOOTMAGIC_ROW 1
+#define BOOTMAGIC_COLUMN 4
+
+#define DEBOUNCE 20
+
 #define MATRIX_ROWS 10
 #define MATRIX_COLS 19
 

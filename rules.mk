@@ -1,5 +1,8 @@
 I2C_DRIVER_REQUIRED = yes
 BOARD = GENERIC_RP_RP2040
+
+DEBOUNCE_TYPE = sym_defer_pr
+
 CUSTOM_MATRIX = yes
 SRC += matrix.c
 SRC += peto59.c
