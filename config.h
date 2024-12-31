@@ -10,7 +10,7 @@
 #define BOOTMAGIC_ROW 1
 #define BOOTMAGIC_COLUMN 4
 
-#define DEBOUNCE 20
+#define DEBOUNCE 30
 
 #define MATRIX_ROWS 10
 #define MATRIX_COLS 19
