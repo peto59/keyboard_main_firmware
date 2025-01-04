@@ -1,7 +1,7 @@
 I2C_DRIVER_REQUIRED = yes
 BOARD = GENERIC_RP_RP2040
 
-DEBOUNCE_TYPE = sym_eager_pk
+DEBOUNCE_TYPE = sym_defer_pk
 
 CUSTOM_MATRIX = yes
 SRC += matrix.c
