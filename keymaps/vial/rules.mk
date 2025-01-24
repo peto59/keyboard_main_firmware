@@ -1,3 +1,11 @@
 VIA_ENABLE = yes
 VIAL_ENABLE = yes
 VIAL_INSECURE = yes
+I2C_DRIVER_REQUIRED = yes
+BOARD = GENERIC_RP_RP2040
+
+DEBOUNCE_TYPE = sym_defer_pk
+
+CUSTOM_MATRIX = yes
+SRC += matrix.c
+SRC += peto59.c

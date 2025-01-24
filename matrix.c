@@ -8,6 +8,7 @@
 #include "quantum.h"
 #include "matrix.h"
 #include "peto59.h"
+#include "ti2c.h"
 #include "ch.h"
 #include "hal.h"
 
