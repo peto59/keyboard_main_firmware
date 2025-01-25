@@ -1,5 +1,11 @@
 {
    "lighting":"none",
+   "customKeycodes": [
+	{"name": "INTL_DEAD_KEY",
+	 "title": "Custom replacement for international dead key",
+	 "shortName": "INT_DK"
+	}
+    ],
    "matrix":{
       "rows":10,
       "cols":19

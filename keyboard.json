@@ -3,7 +3,7 @@
     "maintainer": "peto59",
     "url": "https://github.com/peto59/keyboard_main_firmware",
     "keyboard_name": "ti2c",
-    "bootloader_instructions": "Hold ESC button while plugging in the keyboard. Alternatively press FN+ESC after plugged in.",
+    "bootloader_instructions": "Hold ESC button while plugging in the keyboard. Alternatively press FN+CTRL+ESC after plugged in.",
     "tags": ["split"],
     "debounce": 10,
     "build": {

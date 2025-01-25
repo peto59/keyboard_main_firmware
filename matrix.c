@@ -2,7 +2,6 @@
 #include "debounce.h"
 #include <quantum.h>
 #include <info_config.h>
-#include QMK_KEYBOARD_H
 
 #define MIN_MACRO(A, B) \
 ((A) < (B) ? (A) : (B))
