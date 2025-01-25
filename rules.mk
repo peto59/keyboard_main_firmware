@@ -1,10 +1,7 @@
 I2C_DRIVER_REQUIRED = yes
 BOARD = GENERIC_RP_RP2040
+DEFERRED_EXEC_ENABLE = yes
+TAP_DANCE_ENABLE = yes
+UNICODEMAP_ENABLE = yes
 
-DEBOUNCE_TYPE = sym_defer_pk
-
-CUSTOM_MATRIX = yes
-SRC += matrix.c
-SRC += peto59.c
-
-#OPT_DEFS += -DHAL_USE_I2C=TRUE
+SRC += matrix.c i2c_custom.c
