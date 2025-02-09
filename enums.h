@@ -4,12 +4,8 @@
 
 enum layers {
     _BASE,
+    _COLEMAK,
     _FN,
-    _INTL,
-};
-
-enum my_keycodes {
-    INTL_DEAD_KEY = QK_KB_0
 };
 
 enum unicode_names {
@@ -49,3 +45,10 @@ enum unicode_names {
     Z_CARON_UPPER,
     Z_CARON_LOWER,
 };
+
+typedef union {
+    uint32_t raw;
+    struct {
+        bool     config_written :1;
+    };
+} user_config_t;

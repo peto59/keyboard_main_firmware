@@ -5,7 +5,7 @@
     "keyboard_name": "ti2c",
     "bootloader_instructions": "Hold ESC button while plugging in the keyboard. Alternatively press FN+CTRL+ESC after plugged in.",
     "tags": ["split"],
-    "debounce": 10,
+    "debounce": 12,
     "build": {
         "debounce_type": "sym_eager_pk",
         "firmware_format": "uf2"
@@ -13,7 +13,7 @@
     "features": {
         "bootmagic": true,
         "command": true,
-        "console": false,
+        "console": true,
         "extrakey": true,
         "mousekey": false,
         "nkro": true
