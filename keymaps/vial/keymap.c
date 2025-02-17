@@ -225,18 +225,24 @@ bool dead_key_pressed_caron = false;
 bool shift_pressed = false;
 bool ctrl_pressed = false;
 bool kana_toggled = false;
+bool dakuon_pressed = false;
+bool alt_pressed = false;
 uint_fast8_t bootloader_jump_state = 0;
+uint_fast8_t toggle_kana_state = 0;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     shift_pressed = get_mods() & MOD_MASK_SHIFT;
     ctrl_pressed = get_mods() & MOD_MASK_CTRL;
+    alt_pressed = get_mods() & MOD_MASK_ALT;
     // #ifdef CONSOLE_ENABLE
     // printf("%i\n", record->tap.count);
     // #endif
     if (matrix_get_row(6) & (1 << 11)){ // fn key
         if(record->event.pressed){
             bootloader_jump_state = 1;
+            toggle_kana_state = 1;
         } else {
             bootloader_jump_state = 0;
+            toggle_kana_state = 0;
         }
         return true;
     } else if (matrix_get_row(6) & (1 << 4)){ // Lctrl key
@@ -253,19 +259,61 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             bootloader_jump_state = 0;
         }
         return true;
+    } else if (matrix_get_row(8) & (1 << 10)){ //backspace key
+        if(record->event.pressed && toggle_kana_state == 1){
+            kana_toggled = !kana_toggled;
+            if (kana_toggled) {
+                dead_key_pressed_acute = false;
+                dead_key_pressed_caron = false;
+            }
+            toggle_kana_state = 0;
+            return false;
+        }
+        toggle_kana_state = 0;
+        return true;
     }
     switch (keycode) {
+        case KC_APP:
+            if (record->event.pressed && kana_toggled) {
+                dakuon_pressed = true;
+                return false;
+            } else if (!record->event.pressed && kana_toggled) {
+                dakuon_pressed = false;
+                return false;
+            }
+            return true;
         case TG_KANA:
             if (record->event.pressed) {
                 kana_toggled = !kana_toggled;
+                if (kana_toggled) {
+                    dead_key_pressed_acute = false;
+                    dead_key_pressed_caron = false;
+                }
             }
+            return false;
         case TD(0):
             if (record->event.pressed) {
                 if (kana_toggled) {
-                    if (shift_pressed) {
-                        register_unicodemap(HE_KATA_UPPER);
+                    if (shift_pressed){
+                        if (dakuon_pressed) {
+                            if (alt_pressed) {
+                                register_unicodemap(PE_KATA_UPPER);
+                            } else {
+                                register_unicodemap(BE_KATA_UPPER);
+                            }
+                        } else {
+                            register_unicodemap(HE_KATA_UPPER);
+                        }
                     } else {
-                        register_unicodemap(HE_HIRA_UPPER);
+                        if (dakuon_pressed) {
+                            if (alt_pressed) {
+                                register_unicodemap(PE_HIRA_UPPER);
+                            } else {
+                                register_unicodemap(BE_HIRA_UPPER);
+                            }
+                        } else {
+                            register_unicodemap(HE_HIRA_UPPER);
+                        }
                     }
                     return false;
                 } else if (dead_key_pressed_acute || dead_key_pressed_caron){
@@ -282,9 +330,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 if (kana_toggled) {
                     if (shift_pressed){
-                        register_unicodemap(DI_KATA_UPPER);
+                        if (dakuon_pressed) {
+                            register_unicodemap(DI_KATA_UPPER);
+                        } else {
+                            register_unicodemap(TI_KATA_UPPER);
+                        }
                     } else {
-                        register_unicodemap(DI_HIRA_UPPER);
+                        if (dakuon_pressed) {
+                            register_unicodemap(DI_HIRA_UPPER);
+                        } else {
+                            register_unicodemap(TI_HIRA_UPPER);
+                        }
                     }
                     return false;
                 } else if (dead_key_pressed_acute) {
@@ -442,9 +498,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 if (kana_toggled) {
                     if (shift_pressed){
-                        register_unicodemap(SO_KATA_UPPER);
+                        if (dakuon_pressed) {
+                            register_unicodemap(ZO_KATA_UPPER);
+                        } else {
+                            register_unicodemap(SO_KATA_UPPER);
+                        }
                     } else {
-                        register_unicodemap(SO_HIRA_UPPER);
+                        if (dakuon_pressed) {
+                            register_unicodemap(ZO_HIRA_UPPER);
+                        } else {
+                            register_unicodemap(SO_HIRA_UPPER);
+                        }
                     }
                     return false;
                 } else if (dead_key_pressed_acute) {
@@ -470,9 +534,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 if (kana_toggled) {
                     if (shift_pressed){
-                        register_unicodemap(SI_KATA_UPPER);
+                        if (dakuon_pressed) {
+                            register_unicodemap(ZI_KATA_UPPER);
+                        } else {
+                            register_unicodemap(SI_KATA_UPPER);
+                        }
                     } else {
-                        register_unicodemap(SI_HIRA_UPPER);
+                        if (dakuon_pressed) {
+                            register_unicodemap(ZI_HIRA_UPPER);
+                        } else {
+                            register_unicodemap(SI_HIRA_UPPER);
+                        }
                     }
                     return false;
                 } else if (dead_key_pressed_acute) {
@@ -555,9 +627,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 if (kana_toggled) {
                     if (shift_pressed){
-                        register_unicodemap(SU_KATA_UPPER);
+                        if (dakuon_pressed) {
+                            register_unicodemap(ZU_KATA_UPPER);
+                        } else {
+                            register_unicodemap(SU_KATA_UPPER);
+                        }
                     } else {
-                        register_unicodemap(SU_HIRA_UPPER);
+                        if (dakuon_pressed) {
+                            register_unicodemap(ZU_HIRA_UPPER);
+                        } else {
+                            register_unicodemap(SU_HIRA_UPPER);
+                        }
                     }
                     return false;
                 } else if (dead_key_pressed_acute) {
@@ -579,9 +659,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 if (kana_toggled) {
                     if (shift_pressed){
-                        register_unicodemap(TO_KATA_UPPER);
+                        if (dakuon_pressed) {
+                            register_unicodemap(DO_KATA_UPPER);
+                        } else {
+                            register_unicodemap(TO_KATA_UPPER);
+                        }
                     } else {
-                        register_unicodemap(TO_HIRA_UPPER);
+                        if (dakuon_pressed) {
+                            register_unicodemap(DO_HIRA_UPPER);
+                        } else {
+                            register_unicodemap(TO_HIRA_UPPER);
+                        }
                     }
                     return false;
                 } else if (dead_key_pressed_acute) {
@@ -607,19 +695,27 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 if (kana_toggled) {
                     if (shift_pressed){
-                        register_unicodemap(KA_KATA_UPPER);
+                        if (dakuon_pressed) {
+                            register_unicodemap(GA_KATA_UPPER);
+                        } else {
+                            register_unicodemap(KA_KATA_UPPER);
+                        }
                     } else {
-                        register_unicodemap(KA_HIRA_UPPER);
+                        if (dakuon_pressed) {
+                            register_unicodemap(GA_HIRA_UPPER);
+                        } else {
+                            register_unicodemap(KA_HIRA_UPPER);
+                        }
                     }
                     return false;
-                } else if (record->event.pressed && dead_key_pressed_acute) {
+                } else if (dead_key_pressed_acute) {
                     dead_key_pressed_acute = false;
                     del_mods(MOD_MASK_SHIFT);
                     tap_code(KC_EQL);
                     if (shift_pressed){
                         register_mods(MOD_MASK_SHIFT);
                     }
-                } else if (record->event.pressed && dead_key_pressed_caron) {
+                } else if (dead_key_pressed_caron) {
                     if (shift_pressed){
                         register_unicodemap(T_CARON_UPPER);
                     } else {
@@ -632,47 +728,612 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return true; // Let QMK send the press/release events
 
         case KC_Z:
-            if (record->event.pressed && dead_key_pressed_acute) {
-                dead_key_pressed_acute = false;
-                del_mods(MOD_MASK_SHIFT);
-                tap_code(KC_EQL);
-                if (shift_pressed){
-                    register_mods(MOD_MASK_SHIFT);
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (dakuon_pressed) {
+                            register_unicodemap(DU_KATA_UPPER);
+                        } else {
+                            register_unicodemap(TU_KATA_UPPER);
+                        }
+                    } else {
+                        if (dakuon_pressed) {
+                            register_unicodemap(DU_HIRA_UPPER);
+                        } else {
+                            register_unicodemap(TU_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                } else if (dead_key_pressed_acute) {
+                    dead_key_pressed_acute = false;
+                    del_mods(MOD_MASK_SHIFT);
+                    tap_code(KC_EQL);
+                    if (shift_pressed){
+                        register_mods(MOD_MASK_SHIFT);
+                    }
+                } else if (dead_key_pressed_caron) {
+                    if (shift_pressed){
+                        register_unicodemap(Z_CARON_UPPER);
+                    } else {
+                        register_unicodemap(Z_CARON_LOWER);
+                    }
+                    dead_key_pressed_caron = false;
+                    return false;
                 }
-            } else if (record->event.pressed && dead_key_pressed_caron) {
-                if (shift_pressed){
-                    register_unicodemap(Z_CARON_UPPER);
-                } else {
-                    register_unicodemap(Z_CARON_LOWER);
+            }
+            return true; // Let QMK send the press/release events
+
+        //KANA only
+        case KC_Q:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (dakuon_pressed) {
+                            register_unicodemap(DA_KATA_UPPER);
+                        } else {
+                            register_unicodemap(TA_KATA_UPPER);
+                        }
+                    } else {
+                        if (dakuon_pressed) {
+                            register_unicodemap(DA_HIRA_UPPER);
+                        } else {
+                            register_unicodemap(TA_HIRA_UPPER);
+                        }
+                    }
+                    return false;
                 }
-                dead_key_pressed_caron = false;
-                return false;
+            }
+            return true; // Let QMK send the press/release events
+        case KC_W:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (dakuon_pressed) {
+                            register_unicodemap(DE_KATA_UPPER);
+                        } else {
+                            register_unicodemap(TE_KATA_UPPER);
+                        }
+                    } else {
+                        if (dakuon_pressed) {
+                            register_unicodemap(DE_HIRA_UPPER);
+                        } else {
+                            register_unicodemap(TE_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_P:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (dakuon_pressed) {
+                            register_unicodemap(ZE_KATA_UPPER);
+                        } else {
+                            register_unicodemap(SE_KATA_UPPER);
+                        }
+                    } else {
+                        if (dakuon_pressed) {
+                            register_unicodemap(ZE_HIRA_UPPER);
+                        } else {
+                            register_unicodemap(DE_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_F:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (dakuon_pressed) {
+                            if (alt_pressed) {
+                                register_unicodemap(PA_KATA_UPPER);
+                            } else {
+                                register_unicodemap(BA_KATA_UPPER);
+                            }
+                        } else {
+                            register_unicodemap(HA_KATA_UPPER);
+                        }
+                    } else {
+                        if (dakuon_pressed) {
+                            if (alt_pressed) {
+                                register_unicodemap(PA_HIRA_UPPER);
+                            } else {
+                                register_unicodemap(BA_HIRA_UPPER);
+                            }
+                        } else {
+                            register_unicodemap(HA_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_G:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (dakuon_pressed) {
+                            register_unicodemap(GI_KATA_UPPER);
+                        } else {
+                            register_unicodemap(KI_KATA_UPPER);
+                        }
+                    } else {
+                        if (dakuon_pressed) {
+                            register_unicodemap(GI_HIRA_UPPER);
+                        } else {
+                            register_unicodemap(KI_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_H:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (dakuon_pressed) {
+                            register_unicodemap(GU_KATA_UPPER);
+                        } else {
+                            register_unicodemap(KU_KATA_UPPER);
+                        }
+                    } else {
+                        if (dakuon_pressed) {
+                            register_unicodemap(GU_HIRA_UPPER);
+                        } else {
+                            register_unicodemap(KU_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_J:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        register_unicodemap(MA_KATA_UPPER);
+                    } else {
+                        register_unicodemap(MA_HIRA_UPPER);
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_K:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        register_unicodemap(NO_KATA_UPPER);
+                    } else {
+                        register_unicodemap(NO_HIRA_UPPER);
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_X:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (dakuon_pressed) {
+                            register_unicodemap(ZA_KATA_UPPER);
+                        } else {
+                            register_unicodemap(SA_KATA_UPPER);
+                        }
+                    } else {
+                        if (dakuon_pressed) {
+                            register_unicodemap(ZA_HIRA_UPPER);
+                        } else {
+                            register_unicodemap(SA_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_V:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (dakuon_pressed) {
+                            if (alt_pressed) {
+                                register_unicodemap(PI_KATA_UPPER);
+                            } else {
+                                register_unicodemap(BI_KATA_UPPER);
+                            }
+                        } else {
+                            register_unicodemap(HI_KATA_UPPER);
+                        }
+                    } else {
+                        if (dakuon_pressed) {
+                            if (alt_pressed) {
+                                register_unicodemap(PI_HIRA_UPPER);
+                            } else {
+                                register_unicodemap(BI_HIRA_UPPER);
+                            }
+                        } else {
+                            register_unicodemap(HI_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_B:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (dakuon_pressed) {
+                            register_unicodemap(GO_KATA_UPPER);
+                        } else {
+                            register_unicodemap(KO_KATA_UPPER);
+                        }
+                    } else {
+                        if (dakuon_pressed) {
+                            register_unicodemap(GO_HIRA_UPPER);
+                        } else {
+                            register_unicodemap(KO_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_M:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        register_unicodemap(MO_KATA_UPPER);
+                    } else {
+                        register_unicodemap(MO_HIRA_UPPER);
+                    }
+                    return false;
+                }
             }
             return true; // Let QMK send the press/release events
         case KC_GRV:
-            return true;
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        register_unicodemap(RO_KATA_UPPER);
+                    } else {
+                        register_unicodemap(RO_HIRA_UPPER);
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
         case KC_1:
-            return true;
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        register_unicodemap(NU_KATA_UPPER);
+                    } else {
+                        register_unicodemap(NU_HIRA_UPPER);
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
         case KC_2:
-            return true:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (dakuon_pressed) {
+                            if (alt_pressed) {
+                                register_unicodemap(PU_KATA_UPPER);
+                            } else {
+                                register_unicodemap(BU_KATA_UPPER);
+                            }
+                        } else {
+                            register_unicodemap(HU_KATA_UPPER);
+                        }
+                    } else {
+                        if (dakuon_pressed) {
+                            if (alt_pressed) {
+                                register_unicodemap(PU_HIRA_UPPER);
+                            } else {
+                                register_unicodemap(BU_HIRA_UPPER);
+                            }
+                        } else {
+                            register_unicodemap(HU_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
         case KC_3:
-            return true;
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (ctrl_pressed) {
+                            register_unicodemap(A_KATA_LOWER);
+                        } else {
+                            register_unicodemap(A_KATA_UPPER);
+                        }
+                    } else {
+                        if (ctrl_pressed) {
+                            register_unicodemap(A_HIRA_LOWER);
+                        } else {
+                            register_unicodemap(A_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
         case KC_4:
-            return true;
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (ctrl_pressed) {
+                            register_unicodemap(U_KATA_LOWER);
+                        } else {
+                            register_unicodemap(U_KATA_UPPER);
+                        }
+                    } else {
+                        if (ctrl_pressed) {
+                            register_unicodemap(U_HIRA_LOWER);
+                        } else {
+                            register_unicodemap(U_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
         case KC_5:
-            return true;
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (kana_toggled) {
+                        if (shift_pressed){
+                            if (ctrl_pressed) {
+                                register_unicodemap(E_KATA_LOWER);
+                            } else {
+                                register_unicodemap(E_KATA_UPPER);
+                            }
+                        } else {
+                            if (ctrl_pressed) {
+                                register_unicodemap(E_HIRA_LOWER);
+                            } else {
+                                register_unicodemap(E_HIRA_UPPER);
+                            }
+                        }
+                        return false;
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
         case KC_6:
-            return true;
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (kana_toggled) {
+                        if (shift_pressed){
+                            if (ctrl_pressed) {
+                                register_unicodemap(O_KATA_LOWER);
+                            } else {
+                                register_unicodemap(O_KATA_UPPER);
+                            }
+                        } else {
+                            if (ctrl_pressed) {
+                                register_unicodemap(O_HIRA_LOWER);
+                            } else {
+                                register_unicodemap(O_HIRA_UPPER);
+                            }
+                        }
+                        return false;
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
         case KC_7:
-            return true;
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (ctrl_pressed) {
+                            register_unicodemap(YA_KATA_LOWER);
+                        } else {
+                            register_unicodemap(YA_KATA_UPPER);
+                        }
+                    } else {
+                        if (ctrl_pressed) {
+                            register_unicodemap(YA_HIRA_LOWER);
+                        } else {
+                            register_unicodemap(YA_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
         case KC_8:
-            return true;
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (ctrl_pressed) {
+                            register_unicodemap(YU_KATA_LOWER);
+                        } else {
+                            register_unicodemap(YU_KATA_UPPER);
+                        }
+                    } else {
+                        if (ctrl_pressed) {
+                            register_unicodemap(YU_HIRA_LOWER);
+                        } else {
+                            register_unicodemap(YU_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
         case KC_9:
-            return true;
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (ctrl_pressed) {
+                            register_unicodemap(YO_KATA_LOWER);
+                        } else {
+                            register_unicodemap(YO_KATA_UPPER);
+                        }
+                    } else {
+                        if (ctrl_pressed) {
+                            register_unicodemap(YO_HIRA_LOWER);
+                        } else {
+                            register_unicodemap(YO_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
         case KC_0:
-            return true;
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (ctrl_pressed) {
+                            register_unicodemap(WA_KATA_LOWER);
+                        } else {
+                            register_unicodemap(WA_KATA_UPPER);
+                        }
+                    } else {
+                        if (ctrl_pressed) {
+                            register_unicodemap(WA_HIRA_LOWER);
+                        } else {
+                            register_unicodemap(WA_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
         case KC_MINS:
-            return true;
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (dakuon_pressed) {
+                            if (alt_pressed) {
+                                register_unicodemap(PO_KATA_UPPER);
+                            } else {
+                                register_unicodemap(BO_KATA_UPPER);
+                            }
+                        } else {
+                            register_unicodemap(HO_KATA_UPPER);
+                        }
+                    } else {
+                        if (dakuon_pressed) {
+                            if (alt_pressed) {
+                                register_unicodemap(PO_HIRA_UPPER);
+                            } else {
+                                register_unicodemap(BO_HIRA_UPPER);
+                            }
+                        } else {
+                            register_unicodemap(HO_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_SCLN:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        register_unicodemap(RE_KATA_UPPER);
+                    } else {
+                        register_unicodemap(RE_HIRA_UPPER);
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_QUOT:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        if (dakuon_pressed) {
+                            register_unicodemap(GE_KATA_UPPER);
+                        } else {
+                            register_unicodemap(KE_KATA_UPPER);
+                        }
+                    } else {
+                        if (dakuon_pressed) {
+                            register_unicodemap(GE_HIRA_UPPER);
+                        } else {
+                            register_unicodemap(KE_HIRA_UPPER);
+                        }
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_BSLS:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        register_unicodemap(MU_KATA_UPPER);
+                    } else {
+                        register_unicodemap(MU_HIRA_UPPER);
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_COMM:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        register_unicodemap(NE_KATA_UPPER);
+                    } else {
+                        register_unicodemap(NE_HIRA_UPPER);
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_DOT:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        register_unicodemap(RU_KATA_UPPER);
+                    } else {
+                        register_unicodemap(RU_HIRA_UPPER);
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_SLSH:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        register_unicodemap(ME_KATA_UPPER);
+                    } else {
+                        register_unicodemap(ME_HIRA_UPPER);
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
+        case KC_INT1:
+            if (record->event.pressed) {
+                if (kana_toggled) {
+                    if (shift_pressed){
+                        register_unicodemap(RO_KATA_UPPER);
+                    } else {
+                        register_unicodemap(RO_HIRA_UPPER);
+                    }
+                    return false;
+                }
+            }
+            return true; // Let QMK send the press/release events
         case KC_LSFT:
         case KC_RSFT:
             if (!record->event.pressed){
@@ -687,6 +1348,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return true; // Process all other keycodes normally
     }
+    return true;
 }
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
