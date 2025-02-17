@@ -4,6 +4,13 @@
       "rows":10,
       "cols":19
    },
+   "customKeycodes": [
+	    {
+            "name": "TG_KANA",
+	        "title": "Toggle kana",
+	        "shortName": "TG_KANA"
+	    }
+    ],
    "layouts":{
       "keymap":[
          [
